@@ -5,7 +5,7 @@ import { apiLimiter } from '../middleware/rateLimit';
 const router = express.Router();
 
 // Get server leaderboard
-router.get('/:guildId', authenticateToken, apiLimiter, async (req, res) => {
+router.get('/:guildId', async (req, res) => {
   try {
     const { guildId: _guildId } = req.params;
     // TODO: Get leaderboard data from database
@@ -16,7 +16,7 @@ router.get('/:guildId', authenticateToken, apiLimiter, async (req, res) => {
 });
 
 // Get user stats
-router.get('/:guildId/user/:userId', authenticateToken, apiLimiter, async (req, res) => {
+router.get('/:guildId/:userId', async (req, res) => {
   try {
     const { guildId: _guildId, userId } = req.params;
     // TODO: Get user stats from database
