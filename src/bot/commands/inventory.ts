@@ -22,18 +22,25 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     }
 
     // Create inventory embed
+    const inventoryEntries = Array.from(user.inventory.entries()) as [string, number][];
     const embed = new EmbedBuilder()
       .setColor('#FF6B6B')
       .setTitle(`${interaction.user.username}'s Inventory`)
       .setDescription('Your collected fruits:')
       .addFields(
-        Array.from(user.inventory.entries())
-          .filter(([_, amount]) => amount > 0)
-          .map(([item, amount]) => ({
-            name: item,
-            value: `Amount: ${amount}`,
-            inline: true
-          }))
+        inventoryEntries
+          .filter((entry) => {
+            const [, amount] = entry;
+            return amount > 0;
+          })
+          .map((entry) => {
+            const [item, amount] = entry;
+            return {
+              name: item,
+              value: `Amount: ${amount}`,
+              inline: true
+            };
+          })
       )
       .setTimestamp();
 

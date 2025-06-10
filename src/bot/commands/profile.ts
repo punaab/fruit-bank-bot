@@ -33,6 +33,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const progress = (user.experience / nextLevelXp) * 100;
 
     // Create profile embed
+    const inventoryEntries = Array.from(user.inventory.entries()) as [string, number][];
     const embed = new EmbedBuilder()
       .setColor('#FF6B6B')
       .setTitle(`${targetUser.username}'s Profile`)
@@ -43,9 +44,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         { name: 'Balance', value: `${user.balance} coins`, inline: true },
         { 
           name: 'Inventory', 
-          value: Array.from(user.inventory.entries())
-            .filter(([_, amount]) => amount > 0)
-            .map(([item, amount]) => `${item}: ${amount}`)
+          value: inventoryEntries
+            .filter((entry) => {
+              const [, amount] = entry;
+              return amount > 0;
+            })
+            .map((entry) => {
+              const [item, amount] = entry;
+              return `${item}: ${amount}`;
+            })
             .join('\n') || 'Empty'
         }
       )

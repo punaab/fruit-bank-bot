@@ -37,7 +37,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       .setColor('#FF6B6B')
       .setTitle(`🏆 ${category.charAt(0).toUpperCase() + category.slice(1)} Leaderboard`)
       .setDescription(
-        users.map((user, index) => {
+        users.map((user: any, index: number) => {
           const value = category === 'balance' 
             ? `${user.balance} coins`
             : category === 'level'

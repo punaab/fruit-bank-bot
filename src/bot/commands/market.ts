@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, GuildMember } from 'discord.js';
-import { User } from '../models/User';
+// import { User } from '../models/User';
 import { logger } from '../../utils/logger';
 
 const MARKET_ITEMS = [
