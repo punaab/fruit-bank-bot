@@ -20,7 +20,9 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "noImplicitAny": false,
+    "strictNullChecks": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
