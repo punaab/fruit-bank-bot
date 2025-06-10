@@ -18,7 +18,7 @@ import { logger } from './utils/logger.js';
 config();
 
 const token = process.env.DISCORD_TOKEN;
-const client_id = process.env.DISCORD_CLIENT_ID;
+const client_id = process.env.CLIENT_ID;
 
 if (!token || !client_id) {
   logger.error('Missing required environment variables');

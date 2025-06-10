@@ -4,20 +4,15 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  root: 'src/client',
-  build: {
-    outDir: '../../dist/client',
-    emptyOutDir: true,
-  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src/client'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:3000',
+        target: 'http://localhost:3000',
         changeOrigin: true,
       },
     },
