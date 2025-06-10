@@ -41,21 +41,22 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold">Server Leaderboard</h1>
-      <input
-        type="text"
-        placeholder="Enter Guild ID"
-        value={guildId}
-        onChange={(e) => setGuildId(e.target.value)}
-        className="border p-2 mt-4"
-      />
-      <ul>
-        {entries.map((entry) => (
-          <li key={entry.userId}>
-            User: {entry.username} - Level: {entry.level} - Balance: {entry.balance}
-          </li>
-        ))}
-      </ul>
+      <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
+      <div className="bg-white shadow rounded-lg p-6">
+        <ul className="space-y-4">
+          {entries.map((entry) => (
+            <li key={entry.userId} className="flex items-center justify-between border-b pb-2">
+              <div>
+                <span className="font-semibold">{entry.username}</span>
+              </div>
+              <div className="text-right">
+                <div>Level: {entry.level}</div>
+                <div>Balance: {entry.balance}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
