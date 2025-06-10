@@ -4,10 +4,13 @@ import express from 'express';
 import Stripe from 'stripe';
 import Server from '../../bot/models/Server.js';
 import { Webhook, MessageBuilder } from 'discord-webhook-node';
+import { config } from '../config';
 
 const router = express.Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-05-28.basil'
+
+// Initialize Stripe with the correct API version
+const stripe = new Stripe(config.stripe.secretKey, {
+  apiVersion: '2023-10-16'
 });
 
 const hook = new Webhook(process.env.DISCORD_WEBHOOK_URL || '');
@@ -33,8 +36,8 @@ router.post('/create-checkout-session', async (req, res) => {
         }
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+      success_url: `${config.clientUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${config.clientUrl}/dashboard`,
       metadata: {
         guildId
       }
@@ -55,7 +58,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     const event = stripe.webhooks.constructEvent(
       req.body,
       sig!,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      config.stripe.webhookSecret
     );
 
     if (event.type === 'checkout.session.completed') {
