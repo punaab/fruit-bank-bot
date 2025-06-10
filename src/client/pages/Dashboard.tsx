@@ -13,16 +13,29 @@ interface Reward {
   cost: number;
 }
 
+interface ShopItem {
+  name: string;
+  price: number;
+  type: string;
+  effect: string;
+}
+
 interface Server {
   id: string;
   name: string;
   icon: string;
+  shopItems: ShopItem[];
+  premium: boolean;
 }
 
 interface DashboardResponse {
   items: Item[];
   rewards: Reward[];
   server: Server;
+}
+
+interface CheckoutResponse {
+  url: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -54,14 +67,18 @@ const Dashboard: React.FC = () => {
     }
   }, [user, navigate]);
 
-  const handleShopUpdate = async (items: any) => {
-    await axios.put(`/api/dashboard/${server?.id}/shop`, { items });
+  const handleShopUpdate = async (items: ShopItem[]) => {
+    if (!server) return;
+    await axios.put(`/api/dashboard/${server.id}/shop`, { items });
     alert('Shop updated!');
   };
 
   const handleCheckout = async () => {
-    const res = await axios.post('/api/stripe/create-checkout-session', { guildId: server?.id });
-    window.location.href = res.data.url;
+    if (!server) return;
+    const response = await axios.post<CheckoutResponse>('/api/stripe/create-checkout-session', { 
+      guildId: server.id 
+    });
+    window.location.href = response.data.url;
   };
 
   return (
@@ -69,22 +86,21 @@ const Dashboard: React.FC = () => {
       <h1 className="text-2xl font-bold">Fruit Bank Dashboard</h1>
       {server && (
         <>
-          <h2>Shop Items</h2>
-          <ul>
-            {server.shopItems.map((item) => (
-              <li key={item.name}>{item.name} - ${item.price}</li>
-            ))}
-          </ul>
-          <button
-            onClick={() => handleShopUpdate(server.shopItems)}
-            className="bg-blue-500 text-white p-2 mt-4"
-          >
-            Update Shop
-          </button>
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Shop Items</h2>
+            <ul className="mt-2">
+              {server.shopItems.map((item: ShopItem) => (
+                <li key={item.name} className="flex items-center justify-between py-2">
+                  <span>{item.name}</span>
+                  <span>{item.price} coins</span>
+                </li>
+              ))}
+            </ul>
+          </div>
           {!server.premium && (
             <button
               onClick={handleCheckout}
-              className="bg-green-500 text-white p-2 mt-4"
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Upgrade to Premium
             </button>
