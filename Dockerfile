@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -33,4 +33,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Start the application
-CMD ["node", "dist/index.js"] 
+CMD ["npm", "start"] 
