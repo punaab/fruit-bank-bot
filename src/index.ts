@@ -2,15 +2,10 @@ import {
     Client,
     Events,
     GatewayIntentBits,
-    SlashCommandBuilder,
     Partials,
     REST,
-    Routes,
-    Collection
+    Routes
 } from "discord.js";
-import type { SlashCommand } from "./types";
-import { join } from "path";
-import { readdirSync } from "fs";
 import { config } from 'dotenv';
 import { logger } from './utils/logger.js';
 

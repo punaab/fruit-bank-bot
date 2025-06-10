@@ -34,8 +34,8 @@ app.use(express.static(path.join(process.cwd(), 'dist/client')));
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'dist/client/index.html'));
+app.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, '../../dist/client/index.html'));
 });
 
 // Connect to MongoDB

@@ -45,4 +45,22 @@ router.put('/:guildId/rewards', authenticateToken, apiLimiter, async (req, res) 
   }
 });
 
+router.post('/items', async (req, res) => {
+  try {
+    const { guildId: _guildId, items: _items } = req.body;
+    // ... rest of the code ...
+  } catch (error) {
+    // ... error handling ...
+  }
+});
+
+router.post('/rewards', async (req, res) => {
+  try {
+    const { guildId: _guildId, rewards: _rewards } = req.body;
+    // ... rest of the code ...
+  } catch (error) {
+    // ... error handling ...
+  }
+});
+
 export default router; 

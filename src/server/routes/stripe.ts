@@ -1,17 +1,16 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth';
-import { apiLimiter } from '../middleware/rateLimit';
+// import { authenticateToken } from '../middleware/auth';
+// import { apiLimiter } from '../middleware/rateLimit';
 import Stripe from 'stripe';
 import Server from '../../bot/models/Server.js';
-import { Webhook, Embed } from '@vermaysha/discord-webhook';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
-});
-
-const discordWebhook = new Webhook(process.env.DISCORD_WEBHOOK_URL || '');
+import { WebhookClient } from '@vermaysha/discord-webhook';
 
 const router = express.Router();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-05-28.basil'
+});
+
+const discordWebhook = new WebhookClient(process.env.DISCORD_WEBHOOK_URL || '');
 
 // Create checkout session
 router.post('/create-checkout-session', async (req, res) => {
@@ -67,12 +66,12 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
           await server.save();
 
           // Send Discord notification
-          const embed = new Embed()
-            .setTitle('Premium Purchase')
-            .setDescription(`Server ${guildId} has been upgraded to premium!`)
-            .setColor('#00ff00');
-
-          discordWebhook.addEmbed(embed);
+          const embed = new WebhookClient(process.env.DISCORD_WEBHOOK_URL || '')
+            .addEmbed(new WebhookClient.Embed()
+              .setTitle('Premium Purchase')
+              .setDescription(`Server ${guildId} has been upgraded to premium!`)
+              .setColor('#00ff00')
+            );
           await discordWebhook.send();
         }
       }

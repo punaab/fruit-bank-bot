@@ -1,8 +1,8 @@
-import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import { Client, GatewayIntentBits, Collection, Events } from 'discord.js';
 import { config } from 'dotenv';
 import { connect } from 'mongoose';
 import { logger } from '../utils/logger';
-import { Command, CommandsCollection } from './types';
+import { CommandsCollection } from './types';
 
 // Load environment variables
 config();

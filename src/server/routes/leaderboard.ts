@@ -7,7 +7,7 @@ const router = express.Router();
 // Get server leaderboard
 router.get('/:guildId', authenticateToken, apiLimiter, async (req, res) => {
   try {
-    const { guildId } = req.params;
+    const { guildId: _guildId } = req.params;
     // TODO: Get leaderboard data from database
     res.json([]);
   } catch (error) {
@@ -18,7 +18,7 @@ router.get('/:guildId', authenticateToken, apiLimiter, async (req, res) => {
 // Get user stats
 router.get('/:guildId/user/:userId', authenticateToken, apiLimiter, async (req, res) => {
   try {
-    const { guildId, userId } = req.params;
+    const { guildId: _guildId, userId } = req.params;
     // TODO: Get user stats from database
     res.json({
       userId,

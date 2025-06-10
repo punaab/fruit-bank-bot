@@ -4,7 +4,7 @@ import { authenticateToken } from '../middleware/auth';
 const router = express.Router();
 
 // Discord OAuth2 login
-router.get('/discord', (req, res) => {
+router.get('/discord', (_, res) => {
   const clientId = process.env.DISCORD_CLIENT_ID;
   const redirectUri = process.env.DISCORD_REDIRECT_URI;
   const scope = 'identify guilds';
@@ -45,7 +45,7 @@ router.get('/discord/callback', async (req, res) => {
       },
     });
 
-    const user = await userResponse.json();
+    const userData = await userResponse.json();
 
     // TODO: Create or update user in database
     // TODO: Generate JWT token
