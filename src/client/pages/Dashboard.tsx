@@ -1,5 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
+interface Item {
+  name: string;
+  quantity: number;
+}
+
+interface Reward {
+  name: string;
+  cost: number;
+}
+
+interface DashboardResponse {
+  items: Item[];
+  rewards: Reward[];
+}
 
 interface Server {
   guildId: string;
@@ -10,8 +27,33 @@ interface Server {
 }
 
 const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [server, setServer] = useState<Server | null>(null);
   const [guildId, setGuildId] = useState<string>('');
+  const [items, setItems] = useState<Item[]>([]);
+  const [rewards, setRewards] = useState<Reward[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<DashboardResponse>('/api/dashboard', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setItems(response.data.items);
+        setRewards(response.data.rewards);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        navigate('/login');
+      }
+    };
+
+    if (user) {
+      fetchData();
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (guildId) {

@@ -1,23 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-interface User {
+interface LeaderboardEntry {
   userId: string;
-  coins: number;
-  inventory: { fruit: string; quantity: number }[];
-  role: string;
-  roleLevel: number;
+  username: string;
+  level: number;
+  balance: number;
+}
+
+interface LeaderboardResponse {
+  entries: LeaderboardEntry[];
 }
 
 const Leaderboard: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [guildId, setGuildId] = useState<string>('');
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    if (guildId) {
-      axios.get(`/api/leaderboard/${guildId}`).then((res) => setUsers(res.data));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<LeaderboardResponse>('/api/leaderboard', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setEntries(response.data.entries);
+      } catch (error) {
+        console.error('Error fetching leaderboard data:', error);
+        navigate('/login');
+      }
+    };
+
+    if (user) {
+      fetchData();
     }
-  }, [guildId]);
+  }, [user, navigate]);
 
   return (
     <div className="container mx-auto p-4">
@@ -30,10 +50,9 @@ const Leaderboard: React.FC = () => {
         className="border p-2 mt-4"
       />
       <ul>
-        {users.map((user) => (
-          <li key={user.userId}>
-            User: {user.userId} - Coins: {user.coins} - Role: {user.role} (Level{' '}
-            {user.roleLevel})
+        {entries.map((entry) => (
+          <li key={entry.userId}>
+            User: {entry.username} - Level: {entry.level} - Balance: {entry.balance}
           </li>
         ))}
       </ul>

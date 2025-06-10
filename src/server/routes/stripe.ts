@@ -81,9 +81,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     }
 
     res.json({ received: true });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error processing webhook:', error);
-    res.status(400).send(`Webhook Error: ${error.message}`);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
