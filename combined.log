@@ -1,0 +1,29 @@
+[2025-06-10T05:41:15.680Z] [32minfo[39m: Connected to MongoDB
+[2025-06-10T05:41:16.163Z] [32minfo[39m: Loaded command: pick
+[2025-06-10T05:41:16.527Z] [32minfo[39m: Loaded command: inventory
+[2025-06-10T05:41:16.857Z] [32minfo[39m: Loaded command: sell
+[2025-06-10T05:41:17.156Z] [32minfo[39m: Loaded command: shop
+[2025-06-10T05:41:17.245Z] [32minfo[39m: Loaded command: market
+[2025-06-10T05:41:17.545Z] [32minfo[39m: Loaded command: quest
+[2025-06-10T05:41:17.860Z] [32minfo[39m: Loaded command: leaderboard
+[2025-06-10T05:41:18.187Z] [32minfo[39m: Loaded command: profile
+[2025-06-10T05:41:18.492Z] [32minfo[39m: Loaded command: role
+[2025-06-10T05:41:18.768Z] [32minfo[39m: Loaded command: steal
+[2025-06-10T05:41:18.850Z] [32minfo[39m: Loaded event: ready
+[2025-06-10T05:41:18.927Z] [32minfo[39m: Loaded event: interactionCreate
+[2025-06-10T05:41:19.809Z] [31merror[39m: Error initializing bot: Used disallowed intents
+[2025-06-10T05:46:54.435Z] [32minfo[39m: Connected to MongoDB
+[2025-06-10T05:46:54.893Z] [32minfo[39m: Loaded command: pick
+[2025-06-10T05:46:55.222Z] [32minfo[39m: Loaded command: inventory
+[2025-06-10T05:46:55.545Z] [32minfo[39m: Loaded command: sell
+[2025-06-10T05:46:55.834Z] [32minfo[39m: Loaded command: shop
+[2025-06-10T05:46:55.921Z] [32minfo[39m: Loaded command: market
+[2025-06-10T05:46:56.227Z] [32minfo[39m: Loaded command: quest
+[2025-06-10T05:46:56.521Z] [32minfo[39m: Loaded command: leaderboard
+[2025-06-10T05:46:56.809Z] [32minfo[39m: Loaded command: profile
+[2025-06-10T05:46:57.082Z] [32minfo[39m: Loaded command: role
+[2025-06-10T05:46:57.348Z] [32minfo[39m: Loaded command: steal
+[2025-06-10T05:46:57.426Z] [32minfo[39m: Loaded event: ready
+[2025-06-10T05:46:57.500Z] [32minfo[39m: Loaded event: interactionCreate
+[2025-06-10T05:46:58.219Z] [32minfo[39m: Ready! Logged in as Fruit Bank#2792
+[2025-06-10T05:46:58.590Z] [32minfo[39m: Registered application commands
