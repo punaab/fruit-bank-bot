@@ -29,6 +29,7 @@ RUN npm install --production
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist/client ./dist/client
 
 # Start the application
 CMD ["npm", "start"] 
