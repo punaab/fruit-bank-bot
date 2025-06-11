@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 import { config } from 'dotenv';
 import { logger } from './utils/logger';
+import './server/index';  // Import the Express server
 
 // Load environment variables
 config();
