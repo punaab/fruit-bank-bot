@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('/api/auth/me');
+        const response = await axios.get<User>('/api/auth/me');
         setUser(response.data);
       } catch (error) {
         console.error('Failed to fetch user:', error);
@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
 
     const fetchGuilds = async () => {
       try {
-        const response = await axios.get('/api/auth/guilds');
+        const response = await axios.get<Guild[]>('/api/auth/guilds');
         setGuilds(response.data);
       } catch (error) {
         console.error('Failed to fetch guilds:', error);

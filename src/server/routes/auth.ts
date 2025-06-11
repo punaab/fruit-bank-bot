@@ -11,6 +11,22 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = 'https://fruitbank.xyz/auth/callback';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret';
 
+interface DiscordTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+}
+
+interface DiscordUser {
+  id: string;
+  username: string;
+  discriminator: string;
+  avatar: string;
+  email?: string;
+}
+
 // Discord OAuth2 login
 router.get('/discord', (_, res) => {
   const clientId = process.env.DISCORD_CLIENT_ID;
@@ -31,7 +47,7 @@ router.get('/callback', async (req, res) => {
 
   try {
     // Exchange code for access token
-    const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', {
+    const tokenResponse = await axios.post<DiscordTokenResponse>('https://discord.com/api/oauth2/token', {
       client_id: CLIENT_ID,
       client_secret: CLIENT_SECRET,
       grant_type: 'authorization_code',
@@ -46,7 +62,7 @@ router.get('/callback', async (req, res) => {
     const { access_token } = tokenResponse.data;
 
     // Get user info
-    const userResponse = await axios.get('https://discord.com/api/users/@me', {
+    const userResponse = await axios.get<DiscordUser>('https://discord.com/api/users/@me', {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },

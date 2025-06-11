@@ -10,6 +10,10 @@ interface SubscriptionTier {
   interval: 'month' | 'year';
 }
 
+interface StripeResponse {
+  url: string;
+}
+
 const subscriptionTiers: SubscriptionTier[] = [
   {
     id: 'premium_monthly',
@@ -45,7 +49,7 @@ const Premium: React.FC = () => {
   const handleSubscribe = async (tier: SubscriptionTier) => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/stripe/create-checkout-session', {
+      const response = await axios.post<StripeResponse>('/api/stripe/create-checkout-session', {
         priceId: tier.id,
       });
       window.location.href = response.data.url;
