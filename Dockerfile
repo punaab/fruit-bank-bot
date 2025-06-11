@@ -12,8 +12,9 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build TypeScript
-RUN npm run build
+# Build TypeScript and frontend
+RUN npm run build:backend
+RUN npm run build:frontend
 
 # Production stage
 FROM node:18-alpine

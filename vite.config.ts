@@ -16,7 +16,9 @@ export default defineConfig({
     outDir: 'dist/client',
     emptyOutDir: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'index.html'),
+      input: {
+        app: path.resolve(__dirname, 'src/client/main.tsx'),
+      },
     },
   },
   server: {
