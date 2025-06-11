@@ -7,13 +7,17 @@ import {
     Routes
 } from "discord.js";
 import { config } from 'dotenv';
-import { logger } from './utils/logger.js';
+import { logger } from './utils/logger';
 
 // Load environment variables
 config();
 
 const token = process.env.DISCORD_TOKEN;
 const client_id = process.env.CLIENT_ID;
+
+// Debug logging
+logger.info('Token length: ' + (token ? token.length : 0));
+logger.info('Token starts with: ' + (token ? token.substring(0, 5) + '...' : 'undefined'));
 
 if (!token || !client_id) {
   logger.error('Missing required environment variables');
