@@ -1,92 +1,109 @@
 import express from 'express';
-// import { authenticateToken } from '../middleware/auth';
-// import { apiLimiter } from '../middleware/rateLimit';
 import Stripe from 'stripe';
-import Server from '../../bot/models/Server.js';
-import { Webhook, MessageBuilder } from 'discord-webhook-node';
-import { config } from '../config';
+import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
-
-// Initialize Stripe with the correct API version
-const stripe = new Stripe(config.stripe.secretKey, {
-  apiVersion: '2023-10-16'
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2023-10-16',
 });
 
-const hook = new Webhook(process.env.DISCORD_WEBHOOK_URL || '');
-
-// Create checkout session
-router.post('/create-checkout-session', async (req, res) => {
+// Create a checkout session
+router.post('/create-checkout-session', authenticateToken, async (req, res) => {
   try {
-    const { guildId } = req.body;
+    const { priceId } = req.body;
+    const userId = req.user.id;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Premium Server Upgrade',
-              description: 'Upgrade your server to premium status'
-            },
-            unit_amount: 999 // $9.99
-          },
-          quantity: 1
-        }
+          price: priceId,
+          quantity: 1,
+        },
       ],
-      mode: 'payment',
-      success_url: `${config.clientUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${config.clientUrl}/dashboard`,
+      mode: 'subscription',
+      success_url: `${process.env.FRONTEND_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/premium`,
+      customer_email: req.user.email,
       metadata: {
-        guildId
-      }
+        userId,
+      },
     });
 
     res.json({ url: session.url });
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error('Stripe checkout error:', error);
     res.status(500).json({ error: 'Failed to create checkout session' });
   }
 });
 
-// Handle webhook
+// Handle Stripe webhook events
 router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
 
+  let event;
+
   try {
-    const event = stripe.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       req.body,
       sig!,
-      config.stripe.webhookSecret
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err);
+    return res.status(400).send('Webhook signature verification failed');
+  }
 
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const guildId = session.metadata?.guildId;
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const userId = session.metadata?.userId;
 
-      if (guildId) {
-        // Update server status in database
-        await Server.findOneAndUpdate(
-          { guildId },
-          { isPremium: true },
-          { upsert: true }
-        );
+        if (!userId) {
+          throw new Error('No user ID in session metadata');
+        }
 
-        // Send Discord notification
-        const embed = new MessageBuilder()
-          .setTitle('Premium Purchase')
-          .setDescription(`Server ${guildId} has been upgraded to premium!`)
-          .setColor('#00ff00');
+        // Update user's premium status in database
+        // TODO: Implement database update
+        console.log(`User ${userId} subscribed to premium`);
+        break;
+      }
 
-        await hook.send(embed);
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription;
+        const userId = subscription.metadata?.userId;
+
+        if (!userId) {
+          throw new Error('No user ID in subscription metadata');
+        }
+
+        // Update user's premium status in database
+        // TODO: Implement database update
+        console.log(`User ${userId} cancelled premium subscription`);
+        break;
       }
     }
 
     res.json({ received: true });
-  } catch (error: unknown) {
-    console.error('Error processing webhook:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (error) {
+    console.error('Webhook error:', error);
+    res.status(500).json({ error: 'Webhook handler failed' });
+  }
+});
+
+// Get subscription status
+router.get('/subscription', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // TODO: Get subscription status from database
+    const hasActiveSubscription = false;
+
+    res.json({ hasActiveSubscription });
+  } catch (error) {
+    console.error('Failed to get subscription status:', error);
+    res.status(500).json({ error: 'Failed to get subscription status' });
   }
 });
 
